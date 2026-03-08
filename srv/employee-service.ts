@@ -1,16 +1,24 @@
-import cds from '@sap/cds'
-import { CreateEmployee } from './interfaces';
-import { createEmployee } from '#cds-models/EmployeeService';
-export = (srv: cds.Service) => {
-    const { Employees } = srv.entities;
-
-    srv.before('CREATE', 'Employees', async (req) => {
-        const data = req.data as CreateEmployee, {firstName, lastName, email} = data;
-        if (!data.email.includes("@")) {
-            return req.error(400, "Not a valid email")
-        }
-    })
+import cds from "@sap/cds";
 
 
-    srv.on('CREATE', 'Employees')
+export default class EmployeeService extends cds.ApplicationService {
+    async init() {
+       // Messsaging connection abstract from the actual messaging service.
+       // Local-messaging uses node process
+       const messaging = await cds.connect.to("messaging")
+       
+       this.after('CREATE', 'Employees', async (data) => {
+        await messaging.emit('employee/created', {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email
+        })
+       })
+
+       messaging.on('employee/created', async (msg) => {
+            console.log('Received employee/created', msg.data)
+       })
+
+       return super.init()
+    }
 }

@@ -1,0 +1,9 @@
+// This is a simple http request testing the srv.before logic stating that an email is required to create an employee
+POST http://localhost:4004/odata/v4/true/Employees
+Content-Type: application/json
+
+{
+  "firstName": "Peter",
+  "lastName": "Immersen",
+  "email": "peter@example.com"
+}

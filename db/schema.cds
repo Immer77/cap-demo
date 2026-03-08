@@ -1,12 +1,19 @@
-using { cuid, managed } from '@sap/cds/common';
-namespace dk.immersenit.employees; 
+using {
+    cuid,
+    managed
+} from '@sap/cds/common';
+
+namespace dk.immersenit.employees;
 
 /**
 * Customers entitled to create support Incidents.
 */
-entity Employees : cuid, managed { 
-firstName     : String(80);
-lastName      : String(80);
-name          : String = trim(firstName ||' '|| lastName);
-email         : String(255);
+entity Employees : cuid, managed {
+    firstName : String(80) @mandatory;
+    lastName  : String(80) @mandatory;
+    name      : String = trim(firstName || ' ' || lastName);
+    @mandatory 
+    @assert.format : '.+@.+'
+    @assert.format.message: 'Please enter a valid email!'
+    email     : String(255) ;
 }

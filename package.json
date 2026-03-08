@@ -60,8 +60,7 @@
           ]
         },
         "messaging": {
-          "kind": "file-based-messaging",
-          "file": ".local-msg-box"
+          "kind": "local-messaging"
         }
       }
     }
